@@ -46,10 +46,10 @@ const LatestNews = ({
             }}
           >
             {/* Küçük ekranlarda görsel, lg’de gizli */}
-            {article.imageUrl?.[0] && (
+            {(
               <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded sm:h-20 sm:w-24 lg:hidden">
                 <Image
-                  src={article.imageUrl[0]?? article.coverImage ?? "/placeholder.png"}
+                  src={article?.imageUrl?.[0] ?? article.coverImage ?? "/placeholder.png"}
                   alt={article.title}
                   fill
                   className="object-cover"
