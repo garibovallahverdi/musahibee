@@ -10,7 +10,7 @@ export const revalidate = 30;
 
 const Home = async () => {
   const cursor = undefined
-  const limit = 10
+  const limit = 9
   const article = await api.public.article.galeryNews();
   const initialData = await api.public.article.getStepNews({ limit: 5, page: 1 });
   const initialData2 = await api.public.article.latestNews();
