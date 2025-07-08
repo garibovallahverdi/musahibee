@@ -13,7 +13,7 @@ const MainPageCategpry = async ({ category, header }: { category: string , heade
   return (
     <div className="w-full flex flex-col gap-5">
       <p className="text-2xl text-titleText pl-2 ">{header}</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:grid-cols-3">
         {article.articles
           .filter((item) => item.categorie !== null)
           .map((item) => (
