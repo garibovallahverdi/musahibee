@@ -13,7 +13,10 @@ const RelatedBox = ({ tags ,currentSlug, category,categorie}: { tags: Tag[],curr
   
   const {data, isPending} =  api.public.article.getRelatedNews.useQuery({ tags: tags ?? [],currentSlug, category:categorie! });
   
-  console.log(data, "dataaaaaaaaa");
+
+  if(!data){
+    return
+  }
   return (
        <div className="lg:col-span-1 space-y-6">
           <h3 className="text-2xl font-semibold text-titleText">{category}</h3>

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Article" ADD COLUMN     "views" DOUBLE PRECISION NOT NULL DEFAULT 0;

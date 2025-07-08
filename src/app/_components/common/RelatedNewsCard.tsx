@@ -9,6 +9,9 @@ type Article = {
   slug: string;
   title: string;
   description: string;
+  coverImage: string | null;
+  multimedia: boolean;
+  views:number;
   categorie: {
     name: string;
     urlName: string;
@@ -24,7 +27,7 @@ const RelatedNewsCard = ({ data }: { data: Article }) => {
           {/* Resim Bloğu */}
           <div className="relative w-full lg:w-24 h-40 lg:h-20 flex-shrink-0">
             <Image
-              src={(data.imageUrl ?? [])[0] ?? "/placeholder.jpg"} // Fallback resim
+              src={data.imageUrl?.[0] ?? data.coverImage ?? "/fallback-image.webp"}
               alt={data.title}
               layout="fill"
               objectFit="cover"
@@ -36,14 +39,19 @@ const RelatedNewsCard = ({ data }: { data: Article }) => {
           <div className="flex flex-col justify-between p-2 flex-grow">
             {/* Başlık */}
             <h2 className="text-sm font-medium text-titleText  hover:text-hoverTitle line-clamp-2 transition-colors duration-300">
-              {data.title}
+               {data.title.split("&").map((part, idx, arr) => (
+                  <span key={idx} className={idx === 1 ? "text-red-500" : undefined}>
+                  {part}
+                  {idx < arr.length - 1 && " - "}
+                  </span>
+                ))}
             </h2>
 
             {/* Tarih ve Görüntülenme Bilgisi */}
             <div className="mt-1 flex items-center text-xs text-tagText ">
               <span>{formatLocalizedDate(data.publishedAt ?? undefined)}</span>
               <span className="mx-1">•</span>
-              <span>{ 0} baxış</span>
+              <span>{ data.views} baxış</span>
             </div>
           </div>
         </div>

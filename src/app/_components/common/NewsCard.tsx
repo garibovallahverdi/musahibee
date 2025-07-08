@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FiCalendar } from "react-icons/fi";
+import { IoEyeOutline } from "react-icons/io5";
 import { formatLocalizedDate } from "~/utils/dateFormater";
 
 type Article = {
@@ -12,6 +13,7 @@ type Article = {
   imageUrl: string[] | null;
   publishedAt: Date | null;
   coverImage: string | null;
+  views:number;
   multimedia: boolean;
   categorie: {
     name: string;
@@ -41,14 +43,20 @@ const NewsCard = ({ article }: { article: Article }) => {
         {/* İçerik Alanı */}
         <div className="p-3 text-sm">
           {/* Yayın Tarihi */}
-          <div className="flex items-center text-xs text-gray-500 mb-1">
-            <FiCalendar className="mr-1 text-gray-400" />
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+            <span className="flex items-center ">
+              <FiCalendar className="mr-1 text-gray-400" />
             {formatLocalizedDate(article?.publishedAt ?? undefined)}
+              </span>
+                <span className="flex items-center gap-2">
+                        <IoEyeOutline />
+                        {article.views}
+                      </span>
           </div>
 
           {/* Başlık */}
           <h2 className="text-base font-semibold text-titleText mb-1 line-clamp-2 group-hover:text-blue-700 transition-colors duration-300">
-            {article.title}
+            {article.title.replace('&','-')}
           </h2>
 
           {/* Açıklama */}

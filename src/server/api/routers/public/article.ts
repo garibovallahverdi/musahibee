@@ -2,10 +2,11 @@ import { z } from "zod";
 import Fuse from "fuse.js";
 import redis from "~/server/redisClient";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import slugify from 'slugify';
-import { v4 as uuidv4 } from "uuid";
 import { ArticleStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import LatestNews from "~/app/_components/layout/LatestNews";
+import { subHours } from "date-fns";
+
 export const articleRouter = createTRPCRouter({
 
 
@@ -23,6 +24,7 @@ export const articleRouter = createTRPCRouter({
               coverImage: true,
               slug: true,
               publishedAt: true,
+              views:true,
                categorie: {
                 select: {
                   name: true,
@@ -79,6 +81,7 @@ export const articleRouter = createTRPCRouter({
               description: true,
               category: true,
               multimedia: true,
+              views:true,
               coverImage: true, // Yeni eklenen alan
               imageUrl: true,
                    categorie: {
@@ -165,6 +168,7 @@ export const articleRouter = createTRPCRouter({
               description: true,
               category: true,
               multimedia: true,
+              views:true,
               imageUrl: true,
               coverImage: true, // Yeni eklenen alan
               categorie: {
@@ -216,6 +220,75 @@ export const articleRouter = createTRPCRouter({
       }),
 
 
+            getNewsAll: publicProcedure
+      .input(z.object({
+        limit: z.number(),
+        cursor: z.string().optional(), 
+      }))
+      .query(async ({ ctx, input }) => {
+        const { limit, cursor } = input;
+    
+        try {
+          const articles = await ctx.db.article.findMany({
+            where: {
+              status: ArticleStatus.PUBLISHED,
+            },
+            select:{
+              id: true,
+              title: true,
+              description: true,
+              category: true,
+              multimedia: true,
+              views:true,
+              coverImage: true, // Yeni eklenen alan
+              imageUrl: true,
+                   categorie: {
+                select: {
+                  name: true,
+                  urlName: true,
+                 
+                },
+              },
+              slug: true,
+              publishedAt: true,
+            },
+            take: limit,
+            skip: cursor ? 1 : 0, 
+            cursor: cursor ? { id: cursor } : undefined, 
+            orderBy: {
+              publishedAt: 'desc',
+            }
+          });
+    
+          // const count = await ctx.db.article.count({
+          //   where: {
+          //     status: ArticleStatus.PUBLISHED,
+             
+          //   },
+          // });
+    
+          // if (!articles.length) {
+          //   throw new Error("Xəbər tapılmadı");
+          // } 
+          
+          const nextCursor = articles.length === limit ? articles[articles?.length - 1]?.id : null;
+    
+          return {
+            articles,
+            count :0,
+            nextCursor
+          };
+        } catch (error) {
+          if (error instanceof Error) {
+            throw new Error("İnternal server error: " + error.message);
+          } else {
+            throw new Error("İnternal server error");
+          }
+        }
+      }),
+
+
+
       getById: publicProcedure
       .input(z.object({
         slug: z.string(),
@@ -246,6 +319,7 @@ export const articleRouter = createTRPCRouter({
               coverImage: true, // Yeni eklenen alan
               slug: true,
               publishedAt: true,
+              views:true,
               tags: {
                 select: {
                   name: true,
@@ -316,8 +390,10 @@ export const articleRouter = createTRPCRouter({
             category: true,
             imageUrl: true,
             slug: true,
+            coverImage: true, // Yeni eklenen alan
             multimedia: true,
             publishedAt: true,
+            views:true,
             categorie: {
               select: {
                 name: true,
@@ -368,6 +444,7 @@ export const articleRouter = createTRPCRouter({
             multimedia: true,
             coverImage: true,
             imageUrl: true,
+            views:true,
             slug: true,
             publishedAt: true,
             categorie: {
@@ -397,6 +474,74 @@ export const articleRouter = createTRPCRouter({
     }
   }),
 
+
+latestNews: publicProcedure
+.query(async ({ ctx }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const thirtySixHoursAgo:Date = subHours(new Date(), 72);
+
+  try {
+    const articles = await ctx.db.article.findMany({
+      where: {
+        status: ArticleStatus.PUBLISHED,
+        publishedAt: {
+          gte: thirtySixHoursAgo,
+        },
+      },
+      orderBy: {
+        publishedAt: 'desc',
+      },
+      take: 15, // Maksimum 15 haber
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        multimedia: true,
+        coverImage: true,
+        imageUrl: true,
+        slug: true,
+        publishedAt: true,
+        views:true,
+        categorie: {
+          select: {
+            name: true,
+            urlName: true,
+          },
+        },
+      },
+    });
+
+    return { articles };
+  } catch (error) {
+    throw new Error(
+      "Internal server error: " + (error instanceof Error ? error.message : "Unknown error")
+    );
+  }
+}),
+
+ increseView:publicProcedure
+  .input(
+    z.object({
+      slug: z.string(),
+    })
+  )
+  .mutation(async ({ ctx, input }) => {
+    try {
+      await ctx.db.article.update({
+        where: { slug: input.slug },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+
+      return { success: true };
+    } catch (error: unknown) {
+      console.error("View artırılırken hata:", error);
+      throw new Error("Görüntülenme sayısı artırılamadı.");
+    }
+  }),
 
   // search : publicProcedure
   // .input(

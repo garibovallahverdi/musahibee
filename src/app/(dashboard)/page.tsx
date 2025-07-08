@@ -4,13 +4,17 @@ import Steps from '../_components/layout/Steps';
 import { api } from '~/trpc/server';
 import LatestNews from '../_components/layout/LatestNews';
 import MainPageCategpry from './_components/MainPageCategpry';
+import NewsContainerAll from './_components/NewsContainerAll';
 
 export const revalidate = 30;
 
 const Home = async () => {
+  const cursor = undefined
+  const limit = 10
   const article = await api.public.article.galeryNews();
   const initialData = await api.public.article.getStepNews({ limit: 5, page: 1 });
-  const initialData2 = await api.public.article.getStepNews({ limit: 20, page: 1 });
+  const initialData2 = await api.public.article.latestNews();
+  const allNews = await api.public.article.getNewsAll({limit, cursor});
 
   return (
     <div className="max-w-[1200px] mx-auto">
@@ -30,27 +34,39 @@ const Home = async () => {
             <MainPageCategpry category="i̇dman" header="İdman" />
             <MainPageCategpry category="turizm" header="Turizm" />
             <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
-            <MainPageCategpry category="i̇qti̇sadi̇yyat" header="İqtisadiyyat" />
+          </div>
+              <div className="flex flex-col  mt-4">
+      <p className="text-2xl text-titleText pl-2 ">Digər</p>
+
+           <NewsContainerAll   initialData={{
+        ...allNews,
+        articles: allNews.articles.map((article) => ({
+          ...article,
+          
+          categorie: article.categorie
+            ? {
+                name: article.categorie.name,
+                urlName: article.categorie.urlName,
+              }
+            : { name: '', urlName: '' }, // fallback if null
+        })),
+        nextCursor: allNews.nextCursor ?? undefined,
+      }}  limit={limit} />
           </div>
         </div>
 
         {/* Sağ taraf: Scrollable Sticky Sidebar */}
         <div className="lg:col-span-2">
+               <h2 className="mb-4 pl-2 text-2xl font-bold text-titleText sm:pl-4">
+        Son Xəbərlər
+      </h2>
           <div className="sticky top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
             <LatestNews initialData={initialData2} />
           </div>
         </div>
 
       </div>
-    </div>
+      </div>
   );
 };
 

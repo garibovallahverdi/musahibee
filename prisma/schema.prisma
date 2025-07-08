@@ -25,6 +25,7 @@
     categoryId  String
     coverImage  String?
     status      ArticleStatus @default(DRAFT)
+    views       Float         @default(0)
     publishedAt DateTime?
     tags        Tag[]         @relation("Tags")
     createdAt   DateTime      @default(now())

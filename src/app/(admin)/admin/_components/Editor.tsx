@@ -97,13 +97,13 @@ const Editor = () => {
       setSelectedCategory(articleToEdit.category);
       setSelectedTags(articleToEdit.tags.map((t) => t.name));
       // Mevcut galeri görsellerini kopyalayarak state'e ata
-      setGalleryImages([...(articleToEdit.galleryImages || [])]);
-      setIsMultimedia(articleToEdit.multimedia || false);
+      setGalleryImages([...(articleToEdit.galleryImages ?? [])]);
+      setIsMultimedia(articleToEdit.multimedia ?? false);
       setGalleryImagesToDelete([]); // Düzenleme başladığında silinecek resimler listesini sıfırla
 
       // Yeni: Cover Image'ı doldur
-      setCoverImage(articleToEdit.coverImage || null);
-      setOldCoverImage(articleToEdit.coverImage || null); // Eski cover image'ı sakla
+      setCoverImage(articleToEdit.coverImage ?? null);
+      setOldCoverImage(articleToEdit.coverImage ?? null); // Eski cover image'ı sakla
       setCoverImageFile(null); // Yeni dosya seçilmediği için null yap
     } else if (!slug) {
       // Yeni makale oluşturma modu: formu sıfırla

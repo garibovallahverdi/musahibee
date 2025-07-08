@@ -154,6 +154,7 @@ export const tagPublicRouter = createTRPCRouter({
               category: true,
               imageUrl: true,
               coverImage: true,
+              views:true,
               multimedia: true,
               categorie: {
                 select: {

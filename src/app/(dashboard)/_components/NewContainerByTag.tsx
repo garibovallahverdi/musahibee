@@ -23,6 +23,7 @@ type Article = {
   description: string;
   coverImage: string | null;
   multimedia: boolean;
+  views:number;
   categorie: {
     name: string;
     urlName: string;

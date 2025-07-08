@@ -1,34 +1,30 @@
 import Redis from "ioredis";
 
-// Redis bağlantı URL'sini .env dosyanızdan alabilirsiniz.
 const REDIS_URL = "redis://default:nlaNztWp6LXyBnzLimDCTnGkoESDAx1l@redis-13038.c263.us-east-1-2.ec2.redns.redis-cloud.com:13038";
 
-// Redis bağlantısını oluştur
+// Create Redis connection
 const redis = new Redis(REDIS_URL);
 
-// ✅ Başarılı bağlantıyı logla
 redis.on("connect", () => {
-  console.log("✅ Redis bağlantısı başarılı!");
+  console.log("✅ Redis connection successful!");
 });
 
-// 🚀 Bağlantı kurulduğunda log at
 redis.on("ready", () => {
-  console.log("🚀 Redis bağlantısı kullanıma hazır.");
+  console.log("🚀 Redis connection is ready to use.");
 });
 
-// ❌ Hata oluşursa hata mesajını göster
+
 redis.on("error", (err) => {
-  console.error("❌ Redis bağlantı hatası:", err);
+  console.error("❌ Redis connection error:", err);
 });
 
-// ⚠️ Bağlantı kapandığında uyarı ver
 redis.on("end", () => {
-  console.warn("⚠️ Redis bağlantısı kapandı.");
+  console.warn("⚠️ Redis connection closed.");
 });
 
-// ❌ Bağlantı zaman aşımına uğrarsa uyarı ver
-redis.on("reconnecting", (time: any) => {
-  console.warn(`🔄 Redis tekrar bağlanıyor... Bekleme süresi: ${time}ms`);
+// Warn if connection times out or is reconnecting
+redis.on("reconnecting", (time:number) => {
+  console.warn(`🔄 Redis reconnecting... Wait time: ${time}ms`);
 });
 
 export default redis;

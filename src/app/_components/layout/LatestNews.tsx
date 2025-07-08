@@ -9,7 +9,6 @@ type Article = {
   category: string;
   slug: string;
   title: string;
-  description: string;
   multimedia: boolean;
   coverImage: string | null;
   categorie: {
@@ -22,15 +21,15 @@ type Article = {
 const LatestNews = ({
   initialData,
 }: {
-  initialData: { articles: Article[]; totalPages: number };
+  initialData: { articles: Article[];  };
 }) => {
   const articles = initialData.articles;
 
   return (
     <div className="w-full">
-      <h2 className="mb-4 pl-2 text-2xl font-bold text-titleText sm:pl-4">
+      {/* <h2 className="mb-4 pl-2 text-2xl font-bold text-titleText sm:pl-4">
         Son Xəbərlər
-      </h2>
+      </h2> */}
 
       {/* GRID — xs/sm → 2 kolon   md → 3 kolon   lg+ → 1 kolon  */}
       <ul className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
@@ -70,13 +69,13 @@ const LatestNews = ({
                   (e.currentTarget.style.color = "rgb(var(--titleText))")
                 }
               >
-                <p className="">
 
-                {article.title}
-                <span className="text-sm font-normal text-red-500 line-clamp-1">
-                  {article.description}
-                </span>
-                </p>
+                {article.title.split("&").map((part, idx, arr) => (
+                  <span key={idx} className={idx === 1 ? "text-red-500" : undefined}>
+                  {part}
+                  {idx < arr.length - 1 && " - "}
+                  </span>
+                ))}
                 <span className="text-red-500">{article.multimedia && "- FOTO" }</span>
               </Link>
 

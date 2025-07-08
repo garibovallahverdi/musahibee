@@ -17,6 +17,7 @@ type PageProps = {
       title: string;
       imageUrl: string[];
       coverImage: string | null;
+      views:number;
       multimedia: boolean;
       publishedAt: Date | null;
       categorie: { name: string; urlName: string; } | null;
@@ -63,6 +64,7 @@ if (slug.length == 1) {
         ...data,
         articles: data.articles.map((article) => ({
           ...article,
+          
           categorie: article.categorie
             ? {
                 name: article.categorie.name,

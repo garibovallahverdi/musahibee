@@ -8,6 +8,7 @@ import * as cheerio from "cheerio";
 import Image from 'next/image';
 import Link from 'next/link';
 import ImageGallery from '../read/[category]/[slug]/_components/ImageGallery';
+import { api } from '~/trpc/react';
 
 type News =  {
   id: string;
@@ -20,6 +21,7 @@ type News =  {
   coverImage: string | null;
   galleryImages: string[] | null;
   category: string;
+  views:number;
   tags: { name: string }[]; 
 };
 
@@ -30,9 +32,20 @@ const ShowDetail = ({ news }: { news: News  }) => {
 
   const increaseFontSize = () => setBaseFontSize((prev) => Math.min(prev + 2, 30));
   const decreaseFontSize = () => setBaseFontSize((prev) => Math.max(prev - 2, 12));
+  const viewMutate =  api.public.article.increseView.useMutation();
 
-  console.log(news, "news here");
-  
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    if (news.slug) {
+      viewMutate.mutate({ slug: news.slug });
+      console.log("Views increased");
+      
+    }
+  }, 5000); 
+
+  return () => clearTimeout(timer); 
+}, []);
+
   useEffect(() => {
     const content = document.querySelector(".news-detail-content");
     if (content) {
@@ -49,13 +62,6 @@ const ShowDetail = ({ news }: { news: News  }) => {
     
   }, [baseFontSize, elementSizes]);
 
-  // const handleImageClick = (src: string) => {
-  //   setModalImage(src); 
-  // };
-
-  // const closeModal = () => {
-  //   setModalImage(null); // Modalı kapat
-  // };
 
   const cleanHTML = (html: string) => {
     const $ = cheerio.load(html);
@@ -72,38 +78,6 @@ const ShowDetail = ({ news }: { news: News  }) => {
 
   const optimizedContent = cleanHTML(news.content);
 
-  // useEffect(() => {
-   
-  //   const content = document.querySelector(".news-detail-content");
-  //   if (content) {
-  //     const images = content.querySelectorAll("img");
-  //     images.forEach((img) => {
-  //       img.addEventListener("click", () => handleImageClick(img.getAttribute("src") ?? ""));
-  //       img.style.cursor = "pointer"; // Tıklanabilir hale getir
-  //     });
-  //   }
-  
-  //   return () => {
-  //     const content = document.querySelector(".news-detail-content");
-  //     if (content) {
-  //       const images = content.querySelectorAll("img");
-  //       images.forEach((img) => {
-  //         img.removeEventListener("click", () => handleImageClick(img.getAttribute("src") ?? ""));
-  //       });
-  //     }
-  //   }
-  // }, [optimizedContent, modalImage]); // optimizedContent değiştiğinde yeniden çalışır
-  
-//   useEffect(() => {
-//     const contentDiv = document.querySelector('.news-detail-content');
-
-// if (contentDiv) {
-//   const firstImg = contentDiv.querySelector('img');
-//   if (firstImg) {
-//     firstImg.remove();
-//   }
-// }
-//   }, [news.content,optimizedContent]); // news.content değiştiğinde yeniden çalışır
 
   return (
     <div className="">
@@ -128,7 +102,7 @@ const ShowDetail = ({ news }: { news: News  }) => {
         )
       }
 
-      <h1 className="md:text-3xl text-xl font-semibold text-titleText">{news.title}</h1>
+      <h1 className="md:text-3xl text-xl font-semibold text-titleText">{news.title.replace('&','-')}</h1>
 
       <div className="flex gap-4 my-4">
         <button onClick={increaseFontSize} className="p-2 bg-gray-200 rounded-md hover:bg-gray-300">
@@ -159,7 +133,7 @@ const ShowDetail = ({ news }: { news: News  }) => {
         </span>
         <span className="flex items-center gap-2">
           <IoEyeOutline />
-          {0}
+          {news.views}
         </span>
 
         <span className="flex items-center gap-2">
@@ -179,23 +153,7 @@ const ShowDetail = ({ news }: { news: News  }) => {
 
       </div>
         
-      {/* Modal */}
-      {/* {modalImage && (
-        <div
-          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex items-center justify-center z-50"
-          onClick={closeModal}
-        >
-          <Image
-            src={modalImage}
-            width={800}
-            height={600}
-            onClick={(e) => e.stopPropagation()} // Tıklamayı durdur
-            className="max-w-[90%] max-h-[90%] rounded-lg shadow-lg"
-            alt="Expanded"
-          />
-        </div>
-      )} */}
-
+ 
     </div>
   );
 };
