@@ -112,7 +112,7 @@ useEffect(() => {
     },
         {
       label:"Rəsmi̇",
-      href: "/resmi̇",
+      href: "/resmi",
       children: [],
     },
         {
