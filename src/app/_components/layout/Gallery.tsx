@@ -150,6 +150,8 @@ const Carousel = ({ data }: { data: Article[] }) => {
                 alt={`Küçük görsel: ${article.title || "Haber"}`}
                 layout="fill"
                 objectFit="cover"
+                height={200}
+                width={500}
                 className="rounded-lg max-h-28 group-hover:scale-105 transition-transform duration-300" // Thumbnail üzerinde de zoom efekti
               />
               {/* Başparmakların üzerine daha belirgin koyu katman, aktifte kalkar */}

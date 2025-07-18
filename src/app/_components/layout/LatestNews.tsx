@@ -51,7 +51,8 @@ const LatestNews = ({
                 <Image
                   src={article?.imageUrl?.[0] ?? article.coverImage ?? "/placeholder.png"}
                   alt={article.title}
-                  fill
+                  width={200}
+                  height={200}
                   className="object-cover"
                 />
               </div>

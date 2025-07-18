@@ -29,7 +29,8 @@ const RelatedNewsCard = ({ data }: { data: Article }) => {
             <Image
               src={data.imageUrl?.[0] ?? data.coverImage ?? "/fallback-image.webp"}
               alt={data.title}
-              layout="fill"
+              width={600}
+              height={200}
               objectFit="cover"
               className="rounded-l-lg"
             />
