@@ -49,7 +49,7 @@ const LatestNews = ({
             {(
               <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded sm:h-20 sm:w-24 lg:hidden">
                 <Image
-                  src={article?.imageUrl?.[0] ?? article.coverImage ?? "/placeholder.png"}
+                  src={article.imageUrl?.[0] ?? article.coverImage ?? "/fallback-image.webp"}
                   alt={article.title}
                   width={200}
                   height={200}

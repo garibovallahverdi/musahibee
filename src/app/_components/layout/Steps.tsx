@@ -70,7 +70,8 @@ const Steps = ({ initialData }: { initialData: { articles: Article[], totalPages
                 <Image
                   src={selectedArticle.imageUrl?.[0] ?? selectedArticle.coverImage ?? "/fallback-image.webp"}
                   alt={selectedArticle.title ?? ""}
-                  layout="fill"
+                  width={400}
+                  height={400}
                   objectFit="cover"
                   className="rounded-lg"
                   priority

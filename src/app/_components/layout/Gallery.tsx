@@ -148,7 +148,6 @@ const Carousel = ({ data }: { data: Article[] }) => {
               <Image
                 src={article.imageUrl?.[0] ?? article.coverImage ?? "/fallback-image.webp"}
                 alt={`Küçük görsel: ${article.title || "Haber"}`}
-                layout="fill"
                 objectFit="cover"
                 height={200}
                 width={500}

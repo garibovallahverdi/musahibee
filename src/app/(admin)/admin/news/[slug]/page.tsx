@@ -96,11 +96,11 @@ const { data, isLoading, isError, refetch } =
           
         }
         <div className="w-full h-60 relative">
-          <Image
+          <Image 
             width={600}
             height={240}
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            src={data?.coverImage ?? "/placeholder.png"}
+            src={data?.imageUrl?.[0] ?? data?.coverImage ?? "/fallback-image.webp"}
             alt={data?.title ?? "News Cover Image"}
             className="w-full h-full object-cover rounded-lg"
           />
