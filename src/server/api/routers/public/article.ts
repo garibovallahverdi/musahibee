@@ -478,7 +478,7 @@ export const articleRouter = createTRPCRouter({
 latestNews: publicProcedure
 .query(async ({ ctx }) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const thirtySixHoursAgo:Date = subHours(new Date(), 72);
+  const thirtySixHoursAgo:Date = subHours(new Date(), 360);
 
   try {
     const articles = await ctx.db.article.findMany({
